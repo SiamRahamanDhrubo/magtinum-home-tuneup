@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Settings, Search, Clock, Star, Grid3X3 } from "lucide-react";
+import { Settings, Search, Clock, Star, Grid3X3, Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -120,6 +120,27 @@ const Index = () => {
     });
   };
 
+  const handleGameClick = () => {
+    const gameUrl = "Magtinum://Magtinum/game";
+    
+    // Add to recently visited
+    const newVisit = {
+      title: "Minecraft Game",
+      url: gameUrl,
+      time: "Just now"
+    };
+    
+    setRecentlyVisited(prev => [newVisit, ...prev.slice(0, 2)]);
+    
+    // Try to open the custom URL scheme
+    window.location.href = gameUrl;
+    
+    toast({
+      title: "Launching Game",
+      description: "Opening Minecraft server game",
+    });
+  };
+
   const handleRecentVisitClick = (site: typeof recentlyVisited[0]) => {
     window.open(site.url, '_blank');
     toast({
@@ -146,19 +167,29 @@ const Index = () => {
           </h1>
         </div>
         
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="icon" className="hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <Settings className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Magtinum Settings</DialogTitle>
-            </DialogHeader>
-            <SettingsPanel settings={settings} onSettingsChange={updateSettings} />
-          </DialogContent>
-        </Dialog>
+        <div className="flex items-center space-x-3">
+          <Button 
+            onClick={handleGameClick}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          >
+            <Gamepad2 className="h-4 w-4" />
+            <span>Play Game</span>
+          </Button>
+          
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="icon" className="hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Magtinum Settings</DialogTitle>
+              </DialogHeader>
+              <SettingsPanel settings={settings} onSettingsChange={updateSettings} />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Main Content */}
