@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Settings, Search, Clock, Star, Grid3X3, Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,9 +6,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Card, CardContent } from "@/components/ui/card";
 import SettingsPanel from "@/components/SettingsPanel";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [recentlyVisited, setRecentlyVisited] = useState([
     { title: "React Documentation", url: "https://react.dev", time: "2 hours ago" },
@@ -121,23 +122,21 @@ const Index = () => {
   };
 
   const handleGameClick = () => {
-    const gameUrl = "Magtinum://Magtinum/game";
+    // Navigate to the game page instead of using custom URL scheme
+    navigate("/game");
     
     // Add to recently visited
     const newVisit = {
-      title: "Minecraft Game",
-      url: gameUrl,
+      title: "Magtinum Game",
+      url: "/game",
       time: "Just now"
     };
     
     setRecentlyVisited(prev => [newVisit, ...prev.slice(0, 2)]);
     
-    // Try to open the custom URL scheme
-    window.location.href = gameUrl;
-    
     toast({
       title: "Launching Game",
-      description: "Opening Minecraft server game",
+      description: "Opening Magtinum Game Center",
     });
   };
 
