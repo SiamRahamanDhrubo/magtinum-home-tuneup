@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -10,23 +9,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Globe, Palette, Zap, Download, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const SettingsPanel = () => {
+interface SettingsPanelProps {
+  settings: {
+    darkMode: boolean;
+    notifications: boolean;
+    autoUpdates: boolean;
+    trackingProtection: boolean;
+    searchEngine: string;
+    homepage: string;
+    downloadLocation: string;
+    clearDataOnExit: boolean;
+    adBlocker: boolean;
+    cookieBlocking: boolean;
+  };
+  onSettingsChange: (newSettings: any) => void;
+}
+
+const SettingsPanel = ({ settings, onSettingsChange }: SettingsPanelProps) => {
   const { toast } = useToast();
-  const [settings, setSettings] = useState({
-    darkMode: false,
-    notifications: true,
-    autoUpdates: true,
-    trackingProtection: true,
-    searchEngine: "google",
-    homepage: "new-tab",
-    downloadLocation: "/Downloads",
-    clearDataOnExit: false,
-    adBlocker: true,
-    cookieBlocking: false,
-  });
 
   const handleSettingChange = (key: string, value: boolean | string) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    const newSettings = { ...settings, [key]: value };
+    onSettingsChange(newSettings);
+    
     toast({
       title: "Setting updated",
       description: `${key.replace(/([A-Z])/g, ' $1').toLowerCase()} has been ${typeof value === 'boolean' ? (value ? 'enabled' : 'disabled') : 'changed'}`,
@@ -34,9 +39,40 @@ const SettingsPanel = () => {
   };
 
   const clearBrowsingData = () => {
+    // Clear localStorage data
+    const keysToKeep = ['magtinum-settings'];
+    const allKeys = Object.keys(localStorage);
+    allKeys.forEach(key => {
+      if (!keysToKeep.includes(key)) {
+        localStorage.removeItem(key);
+      }
+    });
+
     toast({
       title: "Browsing data cleared",
       description: "Cache, cookies, and browsing history have been cleared.",
+    });
+  };
+
+  const resetToDefaults = () => {
+    const defaultSettings = {
+      darkMode: false,
+      notifications: true,
+      autoUpdates: true,
+      trackingProtection: true,
+      searchEngine: "google",
+      homepage: "new-tab",
+      downloadLocation: "/Downloads",
+      clearDataOnExit: false,
+      adBlocker: true,
+      cookieBlocking: false,
+    };
+    
+    onSettingsChange(defaultSettings);
+    
+    toast({
+      title: "Settings reset",
+      description: "All settings have been reset to their default values.",
     });
   };
 
@@ -223,7 +259,12 @@ const SettingsPanel = () => {
                     onChange={(e) => handleSettingChange("downloadLocation", e.target.value)}
                     className="flex-1"
                   />
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={() => {
+                    toast({
+                      title: "Feature not available",
+                      description: "File browser is not available in web version",
+                    });
+                  }}>
                     <Download className="h-4 w-4 mr-2" />
                     Browse
                   </Button>
@@ -236,7 +277,7 @@ const SettingsPanel = () => {
                   <p className="text-sm text-muted-foreground">
                     Reset all settings to their default values
                   </p>
-                  <Button variant="destructive" size="sm">
+                  <Button variant="destructive" size="sm" onClick={resetToDefaults}>
                     Reset to Defaults
                   </Button>
                 </div>
