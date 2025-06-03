@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 const Game = () => {
   const navigate = useNavigate();
   const [gameStatus, setGameStatus] = useState("connecting");
+  const [serverStatus, setServerStatus] = useState("checking");
 
   useEffect(() => {
     // Simulate game loading
@@ -16,6 +17,39 @@ const Game = () => {
     }, 2000);
 
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // Check server status
+    const checkServerStatus = async () => {
+      try {
+        // You can replace this IP with your actual server IP
+        const serverIP = "127.0.0.1"; // Replace with your server IP
+        const serverPort = "25565"; // Replace with your server port if different
+        
+        // Since we can't directly ping from browser, we'll simulate the check
+        // In a real scenario, you'd need a backend endpoint to check server status
+        console.log(`Checking server status for ${serverIP}:${serverPort}`);
+        
+        // Simulate server check with random result for demo
+        const isOnline = Math.random() > 0.5;
+        
+        setTimeout(() => {
+          setServerStatus(isOnline ? "online" : "offline");
+        }, 3000);
+        
+      } catch (error) {
+        console.error("Error checking server status:", error);
+        setServerStatus("offline");
+      }
+    };
+
+    checkServerStatus();
+    
+    // Check server status every 30 seconds
+    const interval = setInterval(checkServerStatus, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const handleBrowseStore = () => {
@@ -97,14 +131,28 @@ const Game = () => {
                 </div>
                 
                 <div className="text-center space-y-4">
-                  <h3 className="text-xl font-semibold text-white">Game Status</h3>
+                  <h3 className="text-xl font-semibold text-white">Server Status</h3>
                   <div className="bg-slate-700 p-4 rounded-lg">
                     <div className="flex items-center justify-center space-x-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-green-400 font-mono">ONLINE</span>
+                      {serverStatus === "checking" ? (
+                        <>
+                          <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
+                          <span className="text-yellow-400 font-mono">CHECKING...</span>
+                        </>
+                      ) : serverStatus === "online" ? (
+                        <>
+                          <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                          <span className="text-green-400 font-mono">ONLINE</span>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                          <span className="text-red-400 font-mono">OFFLINE</span>
+                        </>
+                      )}
                     </div>
                     <p className="text-slate-400 text-sm mt-2">
-                      Game client initialized and ready for connection
+                      Client Ready For Gaming
                     </p>
                   </div>
                 </div>
