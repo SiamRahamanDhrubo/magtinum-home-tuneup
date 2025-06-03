@@ -18,6 +18,14 @@ const Game = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleBrowseStore = () => {
+    window.open("https://store.steampowered.com/", "_blank");
+  };
+
+  const handleMyLibrary = () => {
+    window.open("https://steamcommunity.com/my/games/", "_blank");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-green-900 to-slate-900">
       {/* Header */}
@@ -65,7 +73,10 @@ const Game = () => {
                     <CardContent className="p-4 text-center">
                       <h3 className="text-lg font-semibold text-green-400 mb-2">Game Store</h3>
                       <p className="text-slate-300 text-sm mb-4">Browse and download new games</p>
-                      <Button className="bg-green-600 hover:bg-green-700 text-white">
+                      <Button 
+                        className="bg-green-600 hover:bg-green-700 text-white"
+                        onClick={handleBrowseStore}
+                      >
                         Browse Store
                       </Button>
                     </CardContent>
@@ -75,7 +86,10 @@ const Game = () => {
                     <CardContent className="p-4 text-center">
                       <h3 className="text-lg font-semibold text-blue-400 mb-2">View Installed Games</h3>
                       <p className="text-slate-300 text-sm mb-4">Access your game library</p>
-                      <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                      <Button 
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                        onClick={handleMyLibrary}
+                      >
                         My Library
                       </Button>
                     </CardContent>
