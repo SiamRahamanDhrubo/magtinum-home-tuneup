@@ -1,12 +1,14 @@
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Gamepad2 } from "lucide-react";
+import { ArrowLeft, Gamepad2, Plus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Game = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [gameStatus, setGameStatus] = useState("connecting");
   const [serverStatus, setServerStatus] = useState("checking");
 
@@ -58,6 +60,45 @@ const Game = () => {
 
   const handleMyLibrary = () => {
     window.open("https://steamcommunity.com/my/games/", "_blank");
+  };
+
+  const handleAddNonMagtinumGames = () => {
+    toast({
+      title: "Add External Games",
+      description: "Feature to add non-Magtinum games coming soon!",
+    });
+  };
+
+  const handleMpkFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (!file.name.endsWith('.mpk')) {
+        toast({
+          title: "Invalid File",
+          description: "Please select a .mpk file",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Loading MPK Game",
+        description: `Processing ${file.name}...`,
+      });
+
+      // Here you would implement the .mpk file processing
+      // Since .mpk is a renamed .zip, you could use a library like JSZip to extract it
+      // For now, we'll just log the file info
+      console.log("MPK file selected:", file.name, "Size:", file.size);
+      
+      // Reset the file input
+      event.target.value = '';
+    }
+  };
+
+  const triggerMpkLoad = () => {
+    const fileInput = document.getElementById('mpk-file-input') as HTMLInputElement;
+    fileInput?.click();
   };
 
   return (
@@ -126,6 +167,41 @@ const Game = () => {
                       >
                         My Library
                       </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-slate-700 border-slate-600">
+                    <CardContent className="p-4 text-center">
+                      <h3 className="text-lg font-semibold text-purple-400 mb-2">Add External Games</h3>
+                      <p className="text-slate-300 text-sm mb-4">Add non-Magtinum games to your library</p>
+                      <Button 
+                        className="bg-purple-600 hover:bg-purple-700 text-white flex items-center space-x-2"
+                        onClick={handleAddNonMagtinumGames}
+                      >
+                        <Plus className="h-4 w-4" />
+                        <span>Add Games</span>
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-slate-700 border-slate-600">
+                    <CardContent className="p-4 text-center">
+                      <h3 className="text-lg font-semibold text-orange-400 mb-2">Load MPK Game</h3>
+                      <p className="text-slate-300 text-sm mb-4">Load games from .mpk files</p>
+                      <Button 
+                        className="bg-orange-600 hover:bg-orange-700 text-white flex items-center space-x-2"
+                        onClick={triggerMpkLoad}
+                      >
+                        <Upload className="h-4 w-4" />
+                        <span>Load .mpk</span>
+                      </Button>
+                      <input
+                        id="mpk-file-input"
+                        type="file"
+                        accept=".mpk"
+                        onChange={handleMpkFileSelect}
+                        className="hidden"
+                      />
                     </CardContent>
                   </Card>
                 </div>
