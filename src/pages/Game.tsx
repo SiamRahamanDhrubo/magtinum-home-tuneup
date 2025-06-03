@@ -63,20 +63,20 @@ const Game = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card className="bg-slate-700 border-slate-600">
                     <CardContent className="p-4 text-center">
-                      <h3 className="text-lg font-semibold text-green-400 mb-2">Minecraft Server</h3>
-                      <p className="text-slate-300 text-sm mb-4">Connect to our custom Minecraft world</p>
+                      <h3 className="text-lg font-semibold text-green-400 mb-2">Game Store</h3>
+                      <p className="text-slate-300 text-sm mb-4">Browse and download new games</p>
                       <Button className="bg-green-600 hover:bg-green-700 text-white">
-                        Launch Minecraft
+                        Browse Store
                       </Button>
                     </CardContent>
                   </Card>
                   
                   <Card className="bg-slate-700 border-slate-600">
                     <CardContent className="p-4 text-center">
-                      <h3 className="text-lg font-semibold text-blue-400 mb-2">Web Games</h3>
-                      <p className="text-slate-300 text-sm mb-4">Play browser-based games</p>
+                      <h3 className="text-lg font-semibold text-blue-400 mb-2">View Installed Games</h3>
+                      <p className="text-slate-300 text-sm mb-4">Access your game library</p>
                       <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                        Browse Games
+                        My Library
                       </Button>
                     </CardContent>
                   </Card>
