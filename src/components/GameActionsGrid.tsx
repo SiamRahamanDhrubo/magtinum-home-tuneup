@@ -1,13 +1,15 @@
 
-import { Plus, Upload } from "lucide-react";
+import { Plus, Upload, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useGameLibrary } from "@/hooks/useGameLibrary";
 
 const GameActionsGrid = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addUserGame } = useGameLibrary();
 
   const handleBrowseStore = () => {
     window.open("https://store.steampowered.com/", "_blank");
@@ -19,6 +21,42 @@ const GameActionsGrid = () => {
 
   const handleAddNonMagtinumGames = () => {
     navigate("/non-magtinum-games");
+  };
+
+  const handleManageExternalGames = () => {
+    navigate("/non-magtinum-games");
+  };
+
+  const handleManageMPKGames = () => {
+    navigate("/mpk-games");
+  };
+
+  const handleExternalGameSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        const gameName = file.name.replace(/\.[^/.]+$/, "");
+        
+        await addUserGame({
+          game_name: gameName,
+          game_type: 'external',
+          file_path: file.path || `C:/Games/${file.name}`,
+          is_installed: false,
+        });
+
+        console.log("External game file selected:", file.name, "Size:", file.size);
+        
+      } catch (error) {
+        console.error("Error adding external game:", error);
+        toast({
+          title: "Error",
+          description: "Failed to add external game",
+          variant: "destructive",
+        });
+      }
+      
+      event.target.value = '';
+    }
   };
 
   const handleMpkFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,15 +77,21 @@ const GameActionsGrid = () => {
       });
 
       try {
-        // Simulate extracting MPK file to .MPK_games folder
-        const userName = "User"; // In a real app, you'd get this from the system
+        const userName = "User";
         const extractPath = `C:/Users/${userName}/.MPK_games/${file.name.replace('.mpk', '')}`;
+        const gameName = file.name.replace('.mpk', '');
         
+        await addUserGame({
+          game_name: gameName,
+          game_type: 'mpk',
+          file_path: file.path || extractPath,
+          install_path: extractPath,
+          is_installed: true,
+        });
+
         console.log("MPK file selected:", file.name, "Size:", file.size);
         console.log("Extracting to:", extractPath);
         
-        // Here you would implement the actual extraction using JSZip or similar
-        // For now, we'll simulate the process
         setTimeout(() => {
           toast({
             title: "MPK Game Loaded",
@@ -64,9 +108,13 @@ const GameActionsGrid = () => {
         });
       }
       
-      // Reset the file input
       event.target.value = '';
     }
+  };
+
+  const triggerExternalGameLoad = () => {
+    const fileInput = document.getElementById('external-game-input') as HTMLInputElement;
+    fileInput?.click();
   };
 
   const triggerMpkLoad = () => {
@@ -103,30 +151,57 @@ const GameActionsGrid = () => {
       </Card>
 
       <Card className="bg-slate-700 border-slate-600">
-        <CardContent className="p-4 text-center">
+        <CardContent className="p-4 text-center space-y-3">
           <h3 className="text-lg font-semibold text-purple-400 mb-2">Add External Games</h3>
           <p className="text-slate-300 text-sm mb-4">Add non-Magtinum games to your library</p>
-          <Button 
-            className="bg-purple-600 hover:bg-purple-700 text-white flex items-center space-x-2"
-            onClick={handleAddNonMagtinumGames}
-          >
-            <Plus className="h-4 w-4" />
-            <span>Add Games</span>
-          </Button>
+          <div className="flex flex-col space-y-2">
+            <Button 
+              className="bg-purple-600 hover:bg-purple-700 text-white flex items-center space-x-2"
+              onClick={triggerExternalGameLoad}
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add Game</span>
+            </Button>
+            <Button 
+              variant="outline"
+              className="border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white flex items-center space-x-2"
+              onClick={handleManageExternalGames}
+            >
+              <Settings className="h-4 w-4" />
+              <span>Manage External Games</span>
+            </Button>
+          </div>
+          <input
+            id="external-game-input"
+            type="file"
+            accept=".exe,.msi,.zip"
+            onChange={handleExternalGameSelect}
+            className="hidden"
+          />
         </CardContent>
       </Card>
 
       <Card className="bg-slate-700 border-slate-600">
-        <CardContent className="p-4 text-center">
+        <CardContent className="p-4 text-center space-y-3">
           <h3 className="text-lg font-semibold text-orange-400 mb-2">Load MPK Game</h3>
           <p className="text-slate-300 text-sm mb-4">Load games from .mpk files</p>
-          <Button 
-            className="bg-orange-600 hover:bg-orange-700 text-white flex items-center space-x-2"
-            onClick={triggerMpkLoad}
-          >
-            <Upload className="h-4 w-4" />
-            <span>Load .mpk</span>
-          </Button>
+          <div className="flex flex-col space-y-2">
+            <Button 
+              className="bg-orange-600 hover:bg-orange-700 text-white flex items-center space-x-2"
+              onClick={triggerMpkLoad}
+            >
+              <Upload className="h-4 w-4" />
+              <span>Load .mpk</span>
+            </Button>
+            <Button 
+              variant="outline"
+              className="border-orange-600 text-orange-400 hover:bg-orange-600 hover:text-white flex items-center space-x-2"
+              onClick={handleManageMPKGames}
+            >
+              <Settings className="h-4 w-4" />
+              <span>Manage MPK Games</span>
+            </Button>
+          </div>
           <input
             id="mpk-file-input"
             type="file"
