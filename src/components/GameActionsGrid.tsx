@@ -12,11 +12,11 @@ const GameActionsGrid = () => {
   const { addUserGame } = useGameLibrary();
 
   const handleBrowseStore = () => {
-    window.open("https://store.steampowered.com/", "_blank");
+    navigate("/mpk-games");
   };
 
   const handleMyLibrary = () => {
-    window.open("https://steamcommunity.com/my/games/", "_blank");
+    navigate("/non-magtinum-games");
   };
 
   const handleAddNonMagtinumGames = () => {
@@ -40,7 +40,7 @@ const GameActionsGrid = () => {
         await addUserGame({
           game_name: gameName,
           game_type: 'external',
-          file_path: file.path || `C:/Games/${file.name}`,
+          file_path: `C:/Games/${file.name}`,
           is_installed: false,
         });
 
@@ -84,7 +84,7 @@ const GameActionsGrid = () => {
         await addUserGame({
           game_name: gameName,
           game_type: 'mpk',
-          file_path: file.path || extractPath,
+          file_path: extractPath,
           install_path: extractPath,
           is_installed: true,
         });
@@ -127,7 +127,7 @@ const GameActionsGrid = () => {
       <Card className="bg-slate-700 border-slate-600">
         <CardContent className="p-4 text-center">
           <h3 className="text-lg font-semibold text-green-400 mb-2">Game Store</h3>
-          <p className="text-slate-300 text-sm mb-4">Browse and download new games</p>
+          <p className="text-slate-300 text-sm mb-4">Browse and download MPK games</p>
           <Button 
             className="bg-green-600 hover:bg-green-700 text-white"
             onClick={handleBrowseStore}

@@ -9,7 +9,81 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      mpk_games: {
+        Row: {
+          created_at: string
+          description: string | null
+          download_url: string
+          file_size: number | null
+          id: string
+          name: string
+          thumbnail_url: string | null
+          updated_at: string
+          version: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          download_url: string
+          file_size?: number | null
+          id?: string
+          name: string
+          thumbnail_url?: string | null
+          updated_at?: string
+          version?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          download_url?: string
+          file_size?: number | null
+          id?: string
+          name?: string
+          thumbnail_url?: string | null
+          updated_at?: string
+          version?: string | null
+        }
+        Relationships: []
+      }
+      user_games: {
+        Row: {
+          created_at: string
+          file_path: string | null
+          game_name: string
+          game_type: string
+          id: string
+          install_path: string | null
+          is_installed: boolean
+          thumbnail_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_path?: string | null
+          game_name: string
+          game_type: string
+          id?: string
+          install_path?: string | null
+          is_installed?: boolean
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_path?: string | null
+          game_name?: string
+          game_type?: string
+          id?: string
+          install_path?: string | null
+          is_installed?: boolean
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
