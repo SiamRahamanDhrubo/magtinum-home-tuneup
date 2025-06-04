@@ -1,16 +1,17 @@
-
 import { useState, useEffect } from "react";
-import { ArrowLeft, Gamepad2, Plus, Upload } from "lucide-react";
+import { ArrowLeft, Gamepad2, Plus, Upload, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import AtsappPopup from "@/components/AtsappPopup";
 
 const Game = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [gameStatus, setGameStatus] = useState("connecting");
   const [serverStatus, setServerStatus] = useState("checking");
+  const [isAtsappOpen, setIsAtsappOpen] = useState(false);
 
   useEffect(() => {
     // Simulate game loading
@@ -63,13 +64,10 @@ const Game = () => {
   };
 
   const handleAddNonMagtinumGames = () => {
-    toast({
-      title: "Add External Games",
-      description: "Feature to add non-Magtinum games coming soon!",
-    });
+    navigate("/non-magtinum-games");
   };
 
-  const handleMpkFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMpkFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (!file.name.endsWith('.mpk')) {
@@ -86,10 +84,31 @@ const Game = () => {
         description: `Processing ${file.name}...`,
       });
 
-      // Here you would implement the .mpk file processing
-      // Since .mpk is a renamed .zip, you could use a library like JSZip to extract it
-      // For now, we'll just log the file info
-      console.log("MPK file selected:", file.name, "Size:", file.size);
+      try {
+        // Simulate extracting MPK file to .MPK_games folder
+        const userName = "User"; // In a real app, you'd get this from the system
+        const extractPath = `C:/Users/${userName}/.MPK_games/${file.name.replace('.mpk', '')}`;
+        
+        console.log("MPK file selected:", file.name, "Size:", file.size);
+        console.log("Extracting to:", extractPath);
+        
+        // Here you would implement the actual extraction using JSZip or similar
+        // For now, we'll simulate the process
+        setTimeout(() => {
+          toast({
+            title: "MPK Game Loaded",
+            description: `${file.name} extracted to .MPK_games folder`,
+          });
+        }, 2000);
+        
+      } catch (error) {
+        console.error("Error processing MPK file:", error);
+        toast({
+          title: "Error",
+          description: "Failed to process MPK file",
+          variant: "destructive",
+        });
+      }
       
       // Reset the file input
       event.target.value = '';
@@ -99,6 +118,10 @@ const Game = () => {
   const triggerMpkLoad = () => {
     const fileInput = document.getElementById('mpk-file-input') as HTMLInputElement;
     fileInput?.click();
+  };
+
+  const handleOpenAtsapp = () => {
+    setIsAtsappOpen(true);
   };
 
   return (
@@ -122,6 +145,14 @@ const Game = () => {
             Magtinum Game
           </h1>
         </div>
+
+        <Button
+          onClick={handleOpenAtsapp}
+          className="bg-green-600 hover:bg-green-700 text-white flex items-center space-x-2"
+        >
+          <MessageCircle className="h-4 w-4" />
+          <span>Atsapp</span>
+        </Button>
       </div>
 
       {/* Game Content */}
@@ -237,6 +268,8 @@ const Game = () => {
           </CardContent>
         </Card>
       </div>
+
+      <AtsappPopup isOpen={isAtsappOpen} onClose={() => setIsAtsappOpen(false)} />
     </div>
   );
 };
