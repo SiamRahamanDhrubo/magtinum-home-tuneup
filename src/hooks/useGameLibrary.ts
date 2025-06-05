@@ -58,7 +58,14 @@ export const useGameLibrary = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setUserGames(data || []);
+      
+      // Type assertion to ensure game_type matches our union type
+      const typedUserGames = (data || []).map(game => ({
+        ...game,
+        game_type: game.game_type as 'external' | 'mpk'
+      }));
+      
+      setUserGames(typedUserGames);
     } catch (error) {
       console.error('Error fetching user games:', error);
       toast({
